@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--
+- Example shows that using CSS to set canvas size will cause drawing
+to be scaled because CSS does not also scale the drawing size.
+
+Should only use canvas attributes themselves to set the size.
+
+Default canvas size is 300x150
+
+
+-->
+<html>
+   <head>
+     <title>Canvas Size</title>
+
+      <style> 
+         body {
+            background: #dddddd;
+         }
+		 
+		 /*element selectors: */
+		 canvas {
+		    margin: 20px;
+            padding: 20px;
+		 }
+		 /* class selectors: */
+		 .canvas {            
+            background: #ffffff;
+            border: thin inset #aaaaaa;
+         }
+
+         /*id selectors: */
+		 
+         #canvas1 {
+         }
+		  
+		 #canvas2 {
+            width: 400px;  /* Sets only the width and height of */
+            height: 400px; /* the canvas element, not the drawing surface */
+         }
+ 
+      </style>
+   </head>
+
+  <body>
+    <canvas id='canvas1' class='canvas' width='600' height='300'>
+      Canvas not supported
+    </canvas>
+    <canvas id='canvas2' class='canvas'>
+      Canvas not supported
+    </canvas>
+
+    <script src='example.js'></script>
+  </body>
+</html>
