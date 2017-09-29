@@ -38,7 +38,7 @@ var fs = require('fs'); //need to read static files
 var url = require('url'); //to parse url strings
 
 
-var ROOT_DIR = 'html'; //dir to serve static files from
+var ROOT_DIR = 'public'; //dir to serve static files from
 
 var MIME_TYPES = {
     'css': 'text/css',
