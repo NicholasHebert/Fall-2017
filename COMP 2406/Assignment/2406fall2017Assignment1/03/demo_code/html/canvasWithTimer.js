@@ -33,21 +33,44 @@ var compileSong = function() {
     var ctx = canvas.getContext("2d");
     ctx.font = "18px Arial";
     var x = 10;
-    var y = 30;
+    var y = 35;
 
     for (i in song) {
         song[i].stringWidth = ctx.measureText(song[i].word).width;
-        if (x + song[i].stringWidth > canvas.width || song[i].word.search(":") != -1 || song[i].word.search("") != -1) {
+        if (x + song[i].stringWidth > canvas.width || song[i].word.search(":") != -1 || song[i].word === ("")) {
             console.log("NEW LINE!");
             x = 10;
             y += 60;
         }
+
+        //determine whether or not the given word is a chord
+        //if the chord is a string determine if the entire word is a chord or is the chord burried within a word
         if (song[i].word.search(/\[/) != -1) {
-            song[i].isChord = true;
+            if (song[i].word.charAt(0) == "[") {
+                song[i].isChord = true;
+            } else {
+                var eChord = "";
+                var nVerse = "";
+                for (k in song[i].word) {
+                    if (song[i].word.charAt(k) == "[") {
+                        while (song[i].word.charAt(k) != "]") {
+                            eChord += song[i].word.charAt(k)
+                            song[i].word.replace(/[*]/, "");
+                            k++;
+                        }
+                    } else {
+                        nVerse += song[i].word.charAt(k);
+                    }
+                }
+                song[i].word = nVerse;
+                song.splice(i, 0, eChord);
+                song.join();
+                song[i].isChord = true;
+            }
         }
 
         if (song[i].isChord) {
-            song[i].y = y + 30;
+            song[i].y = y - 30;
             song[i].x = x;
         } else {
             song[i].x = x;
