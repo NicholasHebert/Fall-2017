@@ -27,7 +27,7 @@ var ctx = canvas.getContext("2d");
 ctx.font = "11px Arial";
 var width = ctx.measureText(str).width;
 */
-var compileSong = function() {
+var sortSong = function() {
     console.log("adding coordinates to each word");
     var canvasTmp = document.createElement('canvas');
     var ctx = canvas.getContext("2d");
@@ -37,44 +37,20 @@ var compileSong = function() {
 
     for (i in song) {
         song[i].stringWidth = ctx.measureText(song[i].word).width;
-        if (x + song[i].stringWidth > canvas.width || song[i].word.search(":") != -1 || song[i].word === ("")) {
+        if (x + song[i].stringWidth > canvas.width || song[i].word.search(":") != -1) { //if Adding a word to the canvas exceeds its size, new line!
             console.log("NEW LINE!");
             x = 10;
             y += 60;
         }
 
-        //determine whether or not the given word is a chord
-        //if the chord is a string determine if the entire word is a chord or is the chord burried within a word
-        if (song[i].word.search(/\[/) != -1) {
-            if (song[i].word.charAt(0) == "[") {
-                song[i].isChord = true;
-            } else {
-                var eChord = "";
-                var nVerse = "";
-                for (k in song[i].word) {
-                    if (song[i].word.charAt(k) == "[") {
-                        while (song[i].word.charAt(k) != "]") {
-                            eChord += song[i].word.charAt(k)
-                            song[i].word.replace(/[*]/, "");
-                            k++;
-                        }
-                    } else {
-                        nVerse += song[i].word.charAt(k);
-                    }
-                }
-                song[i].word = nVerse;
-                song.splice(i, 0, eChord);
-                song.join();
-                song[i].isChord = true;
-            }
-        }
-
         if (song[i].isChord) {
             song[i].y = y - 30;
             song[i].x = x;
+            console.log("Chord " + song[i].word + " updated to " + song[i].x + ", " + song[i].y);
         } else {
             song[i].x = x;
             song[i].y = y;
+            console.log("Word " + song[i].word + " updated to " + song[i].x + ", " + song[i].y);
             x += (song[i].stringWidth + 7);
         }
     }
@@ -205,23 +181,68 @@ function handleSubmitButton() {
             console.log("typeof: " + typeof data);
             var responseObj = JSON.parse(data);
             if (responseObj.found) {
-                var array = responseObj.lyric.toString().replace(/\n/g, " ").split(" ");
+                var array = responseObj.lyric.toString().split(/ |\n/);
+                var cPos;
+
+                for (k in array) {
+                    cPos = array[k].search(/\[/);
+                    if (cPos > 0) { //there is a chord in the middle of a word
+                        var chord = "";
+                        var verse = "";
+                        for (var n = 0; n < array[k].length; n++) {
+                            if (n == cPos) {
+                                while (array[k].charAt(n) != "]") {
+                                    chord += array[k].charAt(n);
+                                    n++;
+                                }
+                                chord += "]";
+                            } else {
+                                verse += array[k].charAt(n);
+                            }
+                        }
+                        song.push({
+                            word: chord,
+                            isChord: true,
+                            stringWidth: 10,
+                            x: 0,
+                            y: 50,
+                        });
+                        song.push({
+                            word: verse,
+                            isChord: false,
+                            stringWidth: 10,
+                            x: 0,
+                            y: 50,
+                        });
+                        console.log("Pushed: " + verse + " " + chord);
+                    } else if (cPos == 0) { //the entire word is a chord
+                        song.push({
+                            word: array[k],
+                            isChord: true,
+                            stringWidth: 10,
+                            x: 0,
+                            y: 50,
+                        });
+                        console.log("Pushed: " + array[k]);
+                    } else { //the word is not a chord
+                        song.push({
+                            word: array[k],
+                            isChord: false,
+                            stringWidth: 10,
+                            x: 0,
+                            y: 50,
+                        });
+                        console.log("Pushed: " + array[k]);
+                    }
+                }
+                console.log("words have been added to song array");
+                sortSong();
+                drawCanvas();
             }
-            for (i in array) {
-                song.push({
-                    word: array[i],
-                    isChord: false,
-                    stringWidth: 10,
-                    x: 0,
-                    y: 50,
-                });
-            }
-            console.log("words have been added to song array")
-            compileSong();
-            drawCanvas();
         });
     }
 }
+
 
 
 $(document).ready(function() {
