@@ -85,12 +85,11 @@ http.createServer(function(request, response) {
                         response.end(JSON.stringify(returnObj)); //send just the JSON object
                     }
                 });
-            } else if (urlObj.pathname == "/saveSong") {
+            } else if (urlObj.pathname == "/saveSong") { //function to write a song to the server
                 var dataObj = JSON.parse(receivedData);
                 var saveData = JSON.stringify(dataObj.song);
                 var filename = ("./songs/" + dataObj.title + ".txt");
-                console.log(saveData);
-                console.log(filename);
+
                 fs.writeFile(filename, saveData, function(err) {
                     if (err) {
                         response.end(err);

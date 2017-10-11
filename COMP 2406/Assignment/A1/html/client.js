@@ -1,5 +1,5 @@
-var song = [];
-var title = "";
+var song = []; //array to store the word object into
+var title = ""; //holds name of current song
 var deltaX, deltaY; //location where mouse is pressed
 var canvas = document.getElementById('canvas1'); //our drawing canvas
 
@@ -21,6 +21,11 @@ function getWordAtLocation(aCanvasX, aCanvasY) {
     }
     return null;
 }
+/*
+Sorting function to assign every word in song with the proper coordinates in order to be drawn properly
+treats chords and regular words differently
+also finds the width of a word by emulating the canvas on page
+*/
 
 var sortSong = function() {
     console.log("adding coordinates to each word");
@@ -72,7 +77,7 @@ var drawCanvas = function() {
     context.fillStyle = 'cornflowerblue';
     context.strokeStyle = 'blue';
 
-    for (var i = 0; i < song.length; i++) { //note i declared as var
+    for (var i = 0; i < song.length; i++) { //var i is necessary here
         context.fillText(song[i].word, song[i].x, song[i].y);
     }
     context.stroke();
@@ -197,12 +202,13 @@ function handlePostSong() {
 function handleSubmitButton() {
 
     var userText = $('#userTextField').val(); //get text from user text input field
-    if (userText && userText != '') {
+    if (userText && userText != '') {//run so long as there is text
         title = userText;
-        //user text was not empty
+
         var userRequestObj = ({
             text: userText
         }); //make object to send to server
+
         var userRequestJSON = JSON.stringify(userRequestObj);
         $('#userTextField').val(''); //clear the user text field
         song = [];
@@ -211,7 +217,7 @@ function handleSubmitButton() {
             var textField = document.getElementById("userTextField");
             var responseObj = JSON.parse(data);
             try { //The file has been processed in the past and should only be loaded into "var song"
-                song = JSON.parse(responseObj.lyric);
+                song = JSON.parse(responseObj.lyric); //this method is used as an exception will be generated here if the data was not processed previously
                 textField.style.backgroundColor = "white";
                 drawCanvas();
 
@@ -238,7 +244,7 @@ function handleSubmitButton() {
                             }
                         }
                     }
-                    array = array.filter(Boolean); //removes all the falsy items since splice() is bugged
+                    array = array.filter(Boolean); //removes all the falsy items since splice() is bugged (i.e. undefined)
                     console.log(array);
 
                     for (k in array) {
@@ -257,7 +263,7 @@ function handleSubmitButton() {
                                     verse += array[k].charAt(n);
                                 }
                             }
-                            if (chord != "") {
+                            if (chord != "") {//ensures we do not add empty elements to song[]
                                 song.push({
                                     word: chord,
                                     isChord: true,
@@ -266,7 +272,7 @@ function handleSubmitButton() {
                                     y: 50,
                                 });
                             }
-                            if (verse != "") {
+                            if (verse != "") {//ensures we do not add empty elements to song[]
                                 song.push({
                                     word: verse,
                                     isChord: false,
@@ -290,7 +296,7 @@ function handleSubmitButton() {
                     console.log("words have been added to song array");
                     sortSong();
                     drawCanvas();
-                } else {
+                } else {//if the song was not found, let the user know
                     textField.value = "Song not found";
                     textField.style.backgroundColor = "red";
                 }
