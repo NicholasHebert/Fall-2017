@@ -19,38 +19,31 @@
 <html>
 
 <head>
-    <title>Canvas Size</title>
+    <title>Assignment1</title>
     <script src="jquery-1.11.3.js"></script>
 
     <style>
         body {
-            background: #gray;
-        }
-        /*element selectors: */
-
-        body {
-            margin: 20px;
+            background-color: Wheat;
+            margin: 30px;
             /*important here for padding to be 0 for mouse calculations */
             padding: 0px;
         }
-        /* class selectors: */
-
-        .canvas {
-            background: #ffffff;
-            border: thin inset #aaaaaa;
-        }
-        /*id selectors: */
-
-        #canvas1 {}
     </style>
 </head>
 
 <body>
-    <input type="text" id="userTextField" name="userTextField" value="" size="60" />
-    <input type="button" value="Submit Request" onClick="handleSubmitButton()">
-    <canvas id='canvas1' class='canvas' width='1024' height='2048'>
+    <h1> Assignment 1</h1>
+    <h3> COMP 2406 </h3>
+    <input type="text" id="userTextField" name="userTextField" value="Please enter the name of a song" size="60" />
+    <input type="button" value="Search Song" onClick="handleSubmitButton()">
+    <input type="button" value="Save Song" onClick="handlePostSong()">
+    <input type="button" value="Sort" onClick="handleSortSong()">
+    <p></p>
+    <canvas id='canvas1' class='canvas' width='1024' height='512' style="border:3px solid #000000;">
       Canvas not supported
     </canvas>
+    <p> Nicholas Hebert (100954895) </p>
     <!--
     <form>
     <input type = "text"  name = "userTextField"  value="" size = "60" />
@@ -60,7 +53,7 @@
 
 
 
-    <script src='canvasWithTimer.js'></script>
+    <script src='client.js'></script>
 </body>
 
 </html>
