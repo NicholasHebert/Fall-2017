@@ -88,7 +88,7 @@ http.createServer(function(request, response) {
             } else if (urlObj.pathname == "/saveSong") { //function to write a song to the server
                 var dataObj = JSON.parse(receivedData);
                 var saveData = JSON.stringify(dataObj.song);
-                var filename = ("./songs/" + dataObj.title + ".txt");
+                var filename = ("./songs/" + (dataObj.title).split(" ").join("") + ".txt");
 
                 fs.writeFile(filename, saveData, function(err) {
                     if (err) {
