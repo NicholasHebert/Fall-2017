@@ -1,0 +1,10 @@
+Word1: Golf
+Word2: Papa
+Word3: India
+Word4: Alpha
+Word5: Bravo
+Word6: Kilo
+Word7: Kilo
+Word8: Golf
+Word9: Lima
+Word10: X-ray
