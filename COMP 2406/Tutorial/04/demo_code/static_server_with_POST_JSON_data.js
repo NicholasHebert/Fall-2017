@@ -19,7 +19,7 @@ Also if the client types in the app text field and presses the "Submit Request" 
 a JSON object containing the text field text will be send to this
 server in a POST message.
 
-Notice in this code we attach an event listener to the request object 
+Notice in this code we attach an event listener to the request object
 to receive data that might come in in chunks. When the request end event
 is posted we look and see if it is a POST message and if so extract the
 data and process it.
@@ -34,8 +34,8 @@ data and process it.
   the server should send a JSON object back to the client to replace
   the words array in the client app.
 */
- 
-//hard coded songs to serve client 
+
+//hard coded songs to serve client
 var peacefulEasyFeeling = [];
 peacefulEasyFeeling.push({word: "I", x:50, y:50});
 peacefulEasyFeeling.push({word: "like", x:70, y:50});
@@ -97,7 +97,7 @@ var MIME_TYPES = {
     'txt': 'text/plain'
 };
 
-var get_mime = function(filename) {
+var get_mime = (filename) => {
     var ext, type;
     for (ext in MIME_TYPES) {
         type = MIME_TYPES[ext];
@@ -114,19 +114,19 @@ http.createServer(function (request,response){
 	 console.log("PATHNAME: " + urlObj.pathname);
      console.log("REQUEST: " + ROOT_DIR + urlObj.pathname);
      console.log("METHOD: " + request.method);
-	 
+
      var receivedData = '';
 
      //attached event handlers to collect the message data
-     request.on('data', function(chunk) {
+     request.on('data', (chunk) => {
         receivedData += chunk;
      });
-	 
+
 	 //event handler for the end of the message
-     request.on('end', function(){
+     request.on('end',() => {
         console.log('received data: ', receivedData);
         console.log('type: ', typeof receivedData);
-		
+
 		//if it is a POST request then echo back the data.
 		if(request.method == "POST"){
 		   var dataObj = JSON.parse(receivedData);
@@ -135,12 +135,12 @@ http.createServer(function (request,response){
 		   //Here we can decide how to process the data object and what
 		   //object to send back to client.
 		   //FOR NOW EITHER JUST PASS BACK AN OBJECT
-		   //WITH "text" PROPERTY 
-		   
+		   //WITH "text" PROPERTY
+
 		   //TO DO: return the words array that the client requested
 		   //if it exists
 
-		   console.log("USER REQUEST: " + dataObj.text );		   
+		   console.log("USER REQUEST: " + dataObj.text );
 		   var returnObj = {};
 		   returnObj.text = 'NOT FOUND: ' + dataObj.text;
 		   for(title in songs) {
@@ -150,9 +150,9 @@ http.createServer(function (request,response){
 			      returnObj.wordArray = songs[title];
 			   }
 		   }
-		   		   
+
 		   //object to return to client
-           response.writeHead(200, {'Content-Type': MIME_TYPES['json']});  
+           response.writeHead(200, {'Content-Type': MIME_TYPES['json']});
            response.end(JSON.stringify(returnObj)); //send just the JSON object
 		}
         if(request.method == "GET"){
@@ -160,7 +160,7 @@ http.createServer(function (request,response){
 	        var filePath = ROOT_DIR + urlObj.pathname;
 	        if(urlObj.pathname === '/') filePath = ROOT_DIR + '/index.html';
 
-            fs.readFile(filePath, function(err,data){
+            fs.readFile(filePath, (err,data) => {
                if(err){
 		         //report error to console
                  console.log('ERROR: ' + JSON.stringify(err));
