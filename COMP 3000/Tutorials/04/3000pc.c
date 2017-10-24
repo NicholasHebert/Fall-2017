@@ -17,7 +17,7 @@
 #include <string.h>
 #include <time.h>
 
-#define QUEUESIZE 32
+#define QUEUESIZE 8
 #define WORDSIZE 16
 
 const int wordlist_size = 27;
@@ -257,7 +257,7 @@ void producer(shared *s, int event_count, int producer_delay_interval)
                 queue_word(word, s);
                 if (producer_delay_interval > 0) {
                         if (i % producer_delay_interval == 0) {
-                                sleep(.1);
+                                sleep(1);
                         }
                 }
         }
@@ -289,7 +289,7 @@ void consumer(shared *s, int event_count, int consumer_delay_interval)
 
                 if (consumer_delay_interval > 0) {
                         if (i % consumer_delay_interval == 0) {
-                                sleep(.1);
+                                sleep(1);
                         }
                 }
         }
