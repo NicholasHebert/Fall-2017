@@ -1,0 +1,75 @@
+COMP 3000 Assignment 2
+Nicholas Hebert
+100954895
+27/10/17
+
+1)  Stat and LStat treat symbolic links differently because they are required for different tasks.
+    Saving to a sym-link requires the inode of the original folder whereas modification of the
+    sym-link requires the inode to the sym-link. A different version of stat is not needed for hard links
+    because the inode of the original file and the hard-link itself is the same. (a)
+
+
+2)  Add a conditional statement that compares the last element of the array to an empty value. If the last element
+    has a value, then the array is full and wait further for the consumer.
+
+
+3)  fill_rand_buffer() called in 3000random when r->current < 0. This only happens when r has not been currently filled
+    by fill_rand_buffer() or fill_rand_buffer() has not been called yet to fill r.
+
+
+4)  They are the exact same function, as long as the reference was properly handled and the implementation is correct
+    there should be no significant loss of functionality.
+
+
+5)  The changes I would make is create the stat structs for for both devices, compare their inode numbers (struct->st_ino)
+    and return a signal or do code based on the conditional statement. If they have the same inode, they are the same device.
+
+
+6)  Yes because the producer and consumer need to be able to access the shared memory to fundamentally work.
+    Without the shared memory, the application will not run as consumer(child) will not be able to access the memory
+    from producer(parent).
+
+
+7)  The data from the hard drive is read on the initial call of mmap, to ram. This happens once. We can verify this
+    by calling the application with strace() and by having print statements letting us know when we actually use, the
+    command and when we use the data taken.
+
+
+8)  To make the producer and consumer move in step with each other we will implement a function to check for a semaphore.
+    This semaphore will allow us to verify whether or not the process can continue or wait. This works because
+    each process waits for its turn to access the shared memory based on the locks on the memory.
+
+
+9)  /dev/urandom is faster than /dev/random because random needs to wait on the entropy pool in order to be generated where as
+    /dev/urandom does not. Using 3000random to test this, if we generate a large amount of numbers the difference in time is vastly
+    different. Urandom is as fast as reading a file, random needs to be generated from the entropy pool (which is slow). It should
+    be noted that urandom is not as "random" as random. If randomness is important random should be used despite being slower.
+
+
+10) When lines 149 and 152 are deleted, the conditional statement to check if the consumer process is waiting is removed. This means
+    when wakeup_consumer is called, it will not check to see if the consume was previously waiting. Set waiting to false. Then send the
+    signal SIGUSR1. This will happen everytime wakeup_consumer is called. This may be problematic as there will be more SIGUSR1 signals
+    sent needlessly.
+
+
+11) If we remove line 231, producer will never wakeup. Therefore producer will produce once, sleep then consumer will perform
+    its task, go to sleep, then producer will not wake up. Resulting in the program stalling. Nothing should happen beyond this.
+
+
+12) The word queue becomes smaller(or larger) meaning if consumer does not consume words fast enough. Producer will wait and
+    display "ERROR: No room for producer after waiting!". This also means the consumer will have more time to consume words.
+    And the producer will be less likely to fail if the QUEUESIZE is larger. If producer and consumer are running at the same
+    rate, no difference should be shown.
+
+
+Sources:
+    (a) - https://askubuntu.com/questions/108771/what-is-the-difference-between-a-hard-link-and-a-symbolic-link
+    Other sources (internal) includes the virtual machine used, for man pages and looking up different components in the system and in
+    class resources.
+
+
+Other Students collaborated with:
+    -Carlo Tutor    101012017
+    -Fawad Asiel    100943904
+    -Sarah Oloumi   100996173
+    -Brian Dwyer    100937372

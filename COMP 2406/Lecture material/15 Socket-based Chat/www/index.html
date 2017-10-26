@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      src='client.js'
+    </script>
+  </head>
+  <body>
+    Messages:
+    <div id='messages'></div>
+    <input type='text' placeholder='Send a message' id='msgBox' onkeypress ='return handleKeyPress(event)'>
+    <input type='button' onclick='sendMessage()' value='Send'>
+  </body>
+</html>
