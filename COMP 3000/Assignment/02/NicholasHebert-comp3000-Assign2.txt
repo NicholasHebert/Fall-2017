@@ -9,8 +9,8 @@ Nicholas Hebert
     because the inode of the original file and the hard-link itself is the same. (a)
 
 
-2)  Add a conditional statement that compares the last element of the array to an empty value. If the last element
-    has a value, then the array is full and wait further for the consumer.
+2)  Add a conditional statement that compares the last element of the word array to an empty value (or implement a functiont
+    that checks to see if the array is full). If the words array is full then send SIGUSR1 and wait further for the consumer.
 
 
 3)  fill_rand_buffer() called in 3000random when r->current < 0. This only happens when r has not been currently filled
@@ -25,9 +25,9 @@ Nicholas Hebert
     and return a signal or do code based on the conditional statement. If they have the same inode, they are the same device.
 
 
-6)  Yes because the producer and consumer need to be able to access the shared memory to fundamentally work.
-    Without the shared memory, the application will not run as consumer(child) will not be able to access the memory
-    from producer(parent).
+6)  Changing the memory to private from shared should have no impact on the application as the process creating the mmap is
+    later accessing it meaning it should still have access to it. After testing it on linux, the output was identical with
+    both flags. In Unix (mac) however, a count increased by 1. This may be caused by the kernel.
 
 
 7)  The data from the hard drive is read on the initial call of mmap, to ram. This happens once. We can verify this
@@ -47,7 +47,7 @@ Nicholas Hebert
 
 
 10) When lines 149 and 152 are deleted, the conditional statement to check if the consumer process is waiting is removed. This means
-    when wakeup_consumer is called, it will not check to see if the consume was previously waiting. Set waiting to false. Then send the
+    when wakeup_consumer is called, it will not check to see if the consumer was previously waiting. Then set waiting to false. Then send the
     signal SIGUSR1. This will happen everytime wakeup_consumer is called. This may be problematic as there will be more SIGUSR1 signals
     sent needlessly.
 

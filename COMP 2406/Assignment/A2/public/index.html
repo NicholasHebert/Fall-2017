@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf8" />
-	<title>Socket.IO ChatRoom</title>
+	<title>Socket Draw!</title>
 	<link rel="stylesheet" href="style.css" />
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -11,13 +11,32 @@
 </head>
 
 <body>
-	<div id="chat"></div>
-	<textarea id="chatLog" class="inline"></textarea>
-	<input id="inputText"></div>
-	<p><span>Users here:</span></p>
-	<ul id="userList" class="inline">
-	</ul>
+	<h1> Assignment 2 </h1>
+	<div id="canvas">
+		<canvas align="right" id="canvas1" class "canvas">Canvas not supported</canvas>
+		<input id="secret" class="gamemaster" hidden="true"></input>
+		<button id="black" class="gamemaster buttons" hidden="true"> Black </button>
+		<button id="red" class="gamemaster buttons" hidden="true"> Red </button>
+		<button	id="blue" class="gamemaster buttons" hidden="true"> Blue </button>
+		<button id="green" class="gamemaster buttons" hidden="true"> Green </button>
+		<button id="orange" class="gamemaster buttons" hidden="true"> Orange </button>
+		<button id="yellow" class="gamemaster buttons" hidden="true"> Yellow </button>
+		<button id="white" class="gamemaster buttons" hidden="true"> Eraser </button>
+		<button id="clearAll" class="gamemaster buttons" hidden="true"> Clear </button>
+		<input type="range" min="1" max="16" value="2" class="gamemaster" id="sizeSlider"></input>
 	</div>
+
+	<div align="left" id="chat">
+		<textarea id="chatLog"></textarea>
+		<p><input id="inputText"></p>
+		<button id=becomeGM class="player"> Draw! </button>
+		<button id=resignGM class="player"> Resign </button>
+		<label id=timer> 60 </label>
+
+		<p><span>Users here:</span></p>
+		<ul id="userList" width=></ul>
+	</div>
+
 </body>
 
 </html>
