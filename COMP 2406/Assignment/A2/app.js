@@ -8,16 +8,17 @@ const INDEX = 'index.html';
 const helper = require('./modules/helpers.js')
 
 http.listen(3000);
-console.log("Server is listning on port 3000, control+c to quit");
+console.log("Server is listning on port 3000, control+c to quit\nAccessible on http://localhost:3000");
 
-var clients = [];
-var gm = "";
-var gmName = "";
-var currAnswer = "";
-var gameState = false;
+var clients = [];       //current socket list
+var gm = "";            //current game master socket
+var gmName = "";        //current game master name
+var currAnswer = "";    //current secret answer
+var gameState = false;  //current state of the game (true for in play, false for no play)
 
+//START: this template was given by Professor Andrew Runka for the fall term of 2016
+//simple http server which can handle a multitude of requests
 function handler(req, res) {
-
     //log the request
     console.log(req.method + " request for: " + req.url);
 
@@ -25,62 +26,32 @@ function handler(req, res) {
     var urlObj = url.parse(req.url);
     var filename = ROOT + urlObj.pathname;
 
-    //the callback sequence for static serving...
-    fs.stat(filename, function(err, stats) { //async
+    //the callback sequence for static serving
+    fs.stat(filename, function(err, stats) { //asyncronous server call
         if (err) { //try and open the file and handle the error
-            respondErr(err);
+            helper.respondErr(err);
         } else if (stats.isDirectory()) {
             fs.readFile(filename + "index.html", function(err, data) { //async
                 if (err) {
-                    respondErr(err);
+                    helper.respondErr(err);
                 } else {
-                    respond(200, data, mime.lookup(filename + "index.html"));
+                    helper.respond(200, data, mime.lookup(filename + "index.html"), res);
                 }
             });
             //handle the serving of data
         } else {
             fs.readFile(filename, function(err, data) {
                 if (err) {
-                    respondErr(err);
+                    helper.respondErr(err);
                 } else {
-                    respond(200, data, mime.lookup(filename));
+                    helper.respond(200, data, mime.lookup(filename), res);
                 }
             });
-        }
-
-        //locally defined helper function
-        //serves 404 files
-        function serve404() {
-            fs.readFile(ROOT + "/404.html", function(err, data) { //async
-                if (err) respond(500, err.message, null);
-                else respond(404, data, mime.lookup(filename));
-            });
-        }
-
-        //locally defined helper function
-        //responds in error, and outputs to the console
-        function respondErr(err) {
-            console.log("Handling error: ", err);
-            if (err.code === "ENOENT") {
-                serve404();
-            } else {
-                respond(500, err.message, null);
-            }
-        }
-        //locally defined helper function
-        //sends off the response message
-        function respond(code, data, contentType) {
-            // content header
-            res.writeHead(code, {
-                'content-type': contentType || 'text/html'
-            });
-            // write message and signal communication is complete
-            res.end(data);
         }
     }); //end handle request
 }
 
-io.on("connection", function(socket) {
+io.on("connection", function(socket) {  //on first connection, save data and welcome
     socket.on("intro", function(data) {
         socket.username = JSON.parse(data);
         console.log("Got a connection from: " + socket.username);
@@ -95,11 +66,11 @@ io.on("connection", function(socket) {
         })));
     });
 
-    var draw = function(data) {
+    var draw = function(data) {     //send draw data
         io.emit("draw", JSON.stringify(data));
     }
 
-    var message = function(data) {
+    var message = function(data) {  //send message and check if the message was the answer
         try{
             var message = JSON.parse(data);
         } catch (e) {
@@ -116,18 +87,18 @@ io.on("connection", function(socket) {
         }
     }
 
-    var broadcast = function(data) {
+    var broadcast = function(data) {    //send to all but socket
         socket.broadcast.emit("message", JSON.stringify(data));
     }
 
-    var submitAnswer = function(data) {
+    var submitAnswer = function(data) { //process game start, requires a secret word
         //save answer
         currAnswer = data;
         gameState = true;
         io.emit("message", JSON.stringify("*** Game Started ***"));
         clearBoard();
         timer(true);
-        var seconds = 60;
+        var seconds = 61;
         var x = setInterval(function() {
             if (!gameState) {
                 clearInterval(x);
@@ -136,12 +107,12 @@ io.on("connection", function(socket) {
             if (seconds < 0) {
                 clearInterval(x);
                 gameState = false;
-                message("*** Game Ended ***\n No winners, answer was " + currAnswer);
+                io.emit("message", JSON.stringify("*** Game Ended ***\n No winners, answer was " + currAnswer));
                 currAnswer = "";
             }
         }, 1000);
     }
-    var disconnect = function() {
+    var disconnect = function() {   //handle disconnect
         if (gm == socket.id) {
             gm = "";
             gameState = false;
@@ -149,11 +120,13 @@ io.on("connection", function(socket) {
             timer(false);
             clearBoard();
             message(helper.getTime() + ": " + socket.username + " disconnected.");
+        } else {
+            message(helper.getTime() + ": " + socket.username + " disconnected.");
         }
     }
 
-    var gamemasterState = function(data) {
-        socket.emit("gamemasterState", JSON.stringify(data));
+    var gamemasterState = function(data) {  //make a player a man... erhm, a game master
+        socket.emit("gamemasterState", JSON.stringify(data));   //this shows or removes the controls
     }
 
     var gamemaster = function() {
