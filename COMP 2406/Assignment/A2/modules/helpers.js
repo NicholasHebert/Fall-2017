@@ -27,21 +27,26 @@ exports.respond = function(code, data, contentType, res) {
 
 //locally defined helper function
 //responds in error, and outputs to the console
-exports.respondErr = function(err) {
+exports.respondErr = function(err, fs, mime, res, filename) {
     console.log("Handling error: ", err);
     if (err.code === "ENOENT") {
-        serve404();
+        fs.readFile("./public/404.html", function(err, data) { //async
+            if (err) {
+                res.writeHead(500, {
+                    'content-type': null || 'text/html'
+                });
+                res.end(err.message);
+            } else {
+                res.writeHead(404, {
+                    'content-type': mime.lookup(filename) || 'text/html'
+                });
+                res.end(data);
+            }
+        });
     } else {
-        respond(500, err.message, null);
+        res.writeHead(500, {
+            'content-type': null || 'text/html'
+        });
+        res.end(err.message);
     }
-}
-
-
-//locally defined helper function
-//serves 404 files
-exports.serve404 = function() {
-    fs.readFile(ROOT + "/404.html", function(err, data) { //async
-        if (err) respond(500, err.message, null);
-        else respond(404, data, mime.lookup(filename));
-    });
 }

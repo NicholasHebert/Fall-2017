@@ -29,11 +29,11 @@ function handler(req, res) {
     //the callback sequence for static serving
     fs.stat(filename, function(err, stats) { //asyncronous server call
         if (err) { //try and open the file and handle the error
-            helper.respondErr(err);
+            helper.respondErr(err, fs, mime, res, filename);
         } else if (stats.isDirectory()) {
             fs.readFile(filename + "index.html", function(err, data) { //async
                 if (err) {
-                    helper.respondErr(err);
+                    helper.respondErr(err, fs, mime, res, filename);
                 } else {
                     helper.respond(200, data, mime.lookup(filename + "index.html"), res);
                 }
@@ -42,7 +42,7 @@ function handler(req, res) {
         } else {
             fs.readFile(filename, function(err, data) {
                 if (err) {
-                    helper.respondErr(err);
+                    helper.respondErr(err, fs, mime, res, filename);
                 } else {
                     helper.respond(200, data, mime.lookup(filename), res);
                 }
