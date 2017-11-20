@@ -1,0 +1,9 @@
+body {
+    font-family: arial;
+    background-color: gray;
+    border-color: white;
+}
+#input{
+    display: table;
+    margin: 0 auto;
+}
