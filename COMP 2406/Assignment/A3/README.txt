@@ -1,19 +1,21 @@
-***IMPORTANT: The code in this example will NOT run unless you add your openweathermap.org API ID Key to
-the server.
+Assignment 3 - COMP 2406
+Nicholas Hebert (100954895)
 
-To install npm modules execute:
->npm install
+Food2Fork
 
-This will install the modules listed as dependencies in the package.json file.
+To install packages run "npm install" in a terminal session in the A3 directory.
 
-To run either execute
->npm start
-or 
->node server.js
+To start the server run "npm start" in a terminal session in the A3 directory.
 
+To close the server use CTRL+C in the terminal session you started it from.
 
-To see the JSON object returned by the openweather.org API use your browser to visit:
-http://localhost:3000/weather?city=Ottawa
+The server is accessible from localhost:3000.
 
-To see the "app" version use your browser to visit:
-http://localhost:3000
+Code was compiled on:   Mac OSX - 10.12.6
+                        Node - v6.11.0
+
+Code was tested on:     Chrome - Version 61.0.3163.100 (Official Build) (x64)
+
+Node dependencies:  "express": "4.15.3",
+                    "request": "2.83.0",
+                    "request-promise": "4.2.2"

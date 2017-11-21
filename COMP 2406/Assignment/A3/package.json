@@ -1,16 +1,17 @@
 {
-    "name": "base_code",
-    "version": "1.0.0",
-    "description": "",
-    "main": "server.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node server.js"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "express": "^4.15.3",
-        "request": "^2.81.0"
-    }
+  "name": "base_code",
+  "version": "1.0.0",
+  "description": "A recipe app which uses the API Food2Fork",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "Nicholas Hebert",
+  "license": "",
+  "dependencies": {
+    "express": "4.15.3",
+    "request": "2.83.0",
+    "request-promise": "4.2.2"
+  }
 }

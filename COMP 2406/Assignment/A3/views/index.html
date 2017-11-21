@@ -2,17 +2,19 @@
 <html lang="en">
 
 <head>
-    <title></title>
+    <title>Food2Fork!</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
-<body>
+<body onload="getRecipes()">
     <div class="container">
+        Assignment 3:</br>
+        Please ensure that your ingredients are</br>seperated by either a space or coma.
         <div class="wrapper">
-            Enter Ingredients: <input type="text" name="ingredients" id="ingredients" />
+            Enter Ingredients: <input type="text" name="ingredients" id="ingredients" value="Chocolate" />
             <button id="submit" onclick="getRecipes()" style="margin-bottom: 50px;">Submit</button>
         </div>
         <div id="RecipeList"></div>

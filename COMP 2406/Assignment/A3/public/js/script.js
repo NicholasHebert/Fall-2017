@@ -12,13 +12,14 @@ function getRecipes() {
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = () => {
         if (xhr.readyState == 4 && xhr.status == 200) {
-            var response = JSON.parse(xhr.responseText)
-            //console.log(response)
-            for(i in response.recipes){
+            var response = JSON.parse(xhr.responseText)//parse the JSON string received
+            console.log(response)
+            for(i in response.recipes){//create the recipes divs individually
                 recipeDiv.innerHTML = recipeDiv.innerHTML +
                 '<div class="recipe">' +
+                '<a href="' + response.recipes[i].source_url + '" target="_blank">' +
                 '<img src="' + response.recipes[i].image_url + '"/><br/>' +
-                response.recipes[i].title + '</div>'
+                response.recipes[i].title + '</a></div>'
             }
         }
     }
