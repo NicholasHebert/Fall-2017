@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head> <title> COMP 2406 Simple form demo </title>
+    <script src="/vendor/jquery/jquery.js"></script>
+    <script src="/vendor/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="/vendor/bootstrap/dist/css/bootstrap.css">
+  </head>
+  <body>
+    <h1>COMP 2406 Simple form demo</h1>
+    <div class="well">
+      <p>Fill out your info</p>
+      <form method="post" action="/add">
+        <div class="control-group input-append">
+          <input id="name" type="text" name="name" data-required>
+          <label for="name" class="add-on">Name</label>
+        </div>
+        <div class="control-group input-append">
+          <input id="country" type="text" name="city" data-required>
+          <label for="city" class="add-on">City</label>
+        </div>
+        <div class="control-group input-append">
+          <input id="country" type="text" name="country">
+          <label for="country" class="add-on">Country</label>
+        </div>
+        <div class="control-group input-append">
+          <input id="birthday" type="text" name="birthday">
+          <label for="birthday" class="add-on">Birthday</label>
+        </div>
+        <div class="control-group input-append">
+          <input id="email" type="text" name="email">
+          <label for="email" class="add-on">Email</label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>

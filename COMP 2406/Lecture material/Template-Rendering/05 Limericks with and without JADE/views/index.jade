@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  h1= title
+
+  div.well
+    p Fill out your info
+    form(method="post", action="/add")
+      div.control-group.input-append
+        input#name(type="text", name="name", data-required)
+        label.add-on(for="name")
+          | Name
+      div.control-group.input-append
+        input#country(type="text", name="city", data-required)
+        label.add-on(for="city")
+          | City
+      div.control-group.input-append
+        input#country(type="text", name="country")
+        label.add-on(for="country")
+          | Country
+      div.control-group.input-append
+        input#birthday(type="text", name="birthday")
+        label.add-on(for="birthday")
+          | Birthday
+      div.control-group.input-append
+        input#email(type="text", name="email")
+        label.add-on(for="email")
+          | Email
+      button(type="submit") Submit
