@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title> {{recipe_name}} </title>
+</head>
+<body>
+   <h1>{{recipe_name}}</h1>
+<div>
+   {{#each recipeEntries}}
+      <h1>{{this.id}}  title: {{this.recipe_name}}</h1>
+      <p>bars: {{this.json}}</p> 
+	{{/each}}
+</div>
+</body>
+</html>

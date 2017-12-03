@@ -14,6 +14,8 @@ db.serialize(function() {
     db.run(sqlString);
     sqlString = "INSERT OR REPLACE INTO users VALUES ('frank', 'secret')";
     db.run(sqlString);
+    sql = 'CREATE TABLE IF NOT EXISTS recipes (`id` INTEGER, `recipe_name` TEXT, `contributor` TEXT, `category` TEXT, `description` TEXT, `spices` TEXT, `sources` TEXT, `rating` TEXT, `ingredients` TEXT, `directions` TEXT, PRIMARY KEY(`id`))';
+    db.run(sql);
 });
 
 exports.authenticate = function(request, response, next) {
@@ -115,12 +117,24 @@ function readFile(filename, callback) {
     });
 }
 
+/*
+function getCDS(str) {
+    var strings = str.split(",");
+    var sqlReady = "";
+    for(var i = 0; i < strings.length; i++) {
+        sqlReady += "'" + strings[i] + "'";
+        if(i+1 < strings.length){
+            sqlReady += ",";
+        }
+    }
+    return sqlReady;
+}*/
+
 
 exports.index = function(request, response) {
     // index.html
     response.render('index', {
-        title: 'COMP 2406',
-        body: 'rendered with handlebars<p><href></href></p>'
+        title: 'COMP 2406 Assignment 4',
     });
 }
 
@@ -152,15 +166,28 @@ exports.find = function(request, response) {
     console.log("RUNNING FIND RECIPES");
 
     var urlObj = parseURL(request, response);
-    var sql = "SELECT id, title FROM recipes";
+    var sql = "SELECT id, recipe_name FROM recipes";
 
-    if (urlObj.query['title']) {
-        console.log("finding title: " + urlObj.query['title']);
-        sql = "SELECT id, title FROM songs WHERE title LIKE '%" +
-            urlObj.query['title'] + "%'";
+    if (urlObj.query['recipe']) {
+        console.log("finding recipe: " + urlObj.query['recipe']);
+        sql = "SELECT id, recipe_name FROM recipes WHERE recipe_name LIKE '%" +
+            urlObj.query['recipe'] + "%'";
+
+    } else if (urlObj.query['spice']) {
+        console.log("finding recipe: " + urlObj.query['spice']);
+        sql = "SELECT id, recipe_name FROM recipes WHERE spices LIKE '%" +
+            urlObj.query['spice'] + "%'";
+
+    } else if (urlObj.query['ingredient']) {
+        console.log("finding recipe: " + urlObj.query['ingredient']);
+        sql = "SELECT id, recipe_name FROM recipes WHERE ingredients LIKE '%" +
+            urlObj.query['ingredient'] + "%'";
     }
 
     db.all(sql, function(err, rows) {
+        if (err) {
+            console.log(err);
+        }
         response.render('recipes', {
             title: 'Recipes:',
             recipeEntries: rows
@@ -173,8 +200,8 @@ exports.recipeDetails = function(request, response) {
     var recipeID = urlObj.path; //expected form: /song/235
     recipeID = recipeID.substring(recipeID.lastIndexOf("/") + 1, recipeID.length);
 
-    var sql = "SELECT id, title, composer, key, bars FROM songs WHERE id=" + recipeID;
-    console.log("GET SONG DETAILS: " + recipeID);
+    var sql = "SELECT id, recipe_name, contributor, category, description, spices, sources, rating, ingredients, directions FROM recipes WHERE id=" + recipeID;
+    console.log("GET Recipe DETAILS: " + recipeID);
 
     db.all(sql, function(err, rows) {
         console.log('Recipe Data');
@@ -188,18 +215,40 @@ exports.recipeDetails = function(request, response) {
 }
 exports.truncate = function(request, response) {
     var sql = "DELETE FROM Recipes";
-    db.all(sql);
+    db.run(sql);
     console.log('Deleted Table Recipes');
 }
 exports.fill = function(request, response) {
-    readFile("./public/aLaCarteData_rev3.xml", function(err, data) {
-        if (err) {
-            console.log(err);
-        } else {
-
-            for(var i=0; i<data.recipes_xml.recipe.length; i++){
-                console.log(data.recipes_xml.recipe[i]);
+    db.serialize(function() {
+        var sql = "DELETE FROM Recipes";
+        db.run(sql);
+        console.log('Deleted Table Recipes');
+        readFile("./public/aLaCarteData_rev3.xml", function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                var stmt = db.prepare("INSERT INTO recipes (id, recipe_name, contributor, category, description, spices, sources, rating, ingredients, directions) VALUES (?,?,?,?,?,?,?,?,?,?)");
+                for (var i = 0; i < data.recipes_xml.recipe.length; i++) {
+                    //console.log(JSON.stringify(data.recipes_xml.recipe[i]));
+                    stmt.run(i, data.recipes_xml.recipe[i].recipe_name,
+                        data.recipes_xml.recipe[i].contributor,
+                        data.recipes_xml.recipe[i].category,
+                        data.recipes_xml.recipe[i].description,
+                        data.recipes_xml.recipe[i].spices,
+                        data.recipes_xml.recipe[i].source,
+                        data.recipes_xml.recipe[i].rating,
+                        data.recipes_xml.recipe[i].ingredients,
+                        data.recipes_xml.recipe[i].directions)
+                    console.log(stmt);
+                    /*db.run(sql, function(err) {
+                        if (err) {
+                            console.log(err);
+                            console.log(i);
+                            console.log("Offender: #" + i + " - " + data.recipes_xml.recipe[i]);
+                        }
+                    });*/
+                }
             }
-        }
+        });
     });
 }

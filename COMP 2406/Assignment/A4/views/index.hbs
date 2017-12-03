@@ -1,10 +1,113 @@
 <!DOCTYPE html>
 <html>
-<head> 
-  <title> {{title}} </title>
+
+<head>
+    <title> {{title}} </title>
+    <style>
+        .button {
+            min-width: 200px;
+            min-height: 100px;
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .man {
+            max-width: 200px;
+            margin: 10px;
+            float: left;
+        }
+
+        .search {
+            min-width: 200px;
+            min-height: 42px;
+            font-size: 16px;
+            margin: 5px;
+        }
+    </style>
 </head>
+
 <body>
-   <h1>{{title}}</h1>
-   <h2>{{body}}</h2>         
+    <h1>{{title}}</h1>
+    <div class="man">
+        <form action="http://localhost:3000/truncate" onsubmit="return empty()">
+            <input class="button" type="submit" value="Empty database" />
+        </form>
+        <form action="http://localhost:3000/fill" onsubmit="return fill()">
+            <input class="button" type="submit" value="Populate database" />
+        </form>
+        <form action="http://localhost:3000/find">
+            <input class="button" type="submit" value="View database" />
+        </form>
+    </div>
+    <div class="man">
+        <input class="search" type="submit" onclick="searchIng()" value="Search by ingredient" />
+        <input class="search" type="text" id="ingredientText" value="">
+        <input class="search" type="submit" onclick="searchSpi()" value="Search by spice" />
+        <input class="search" type="text" id="spiceText" value="">
+        <input class="search" type="submit" onclick="searchNam()" value="Search by name" />
+        <input class="search" type="text" id="nameText" value="">
+    </div>
 </body>
+
+<script>
+    window.onload = function() {
+        $(ingredientText).keypress(function(event) {
+            if (event.which == 13) {
+                searchIng();
+            }
+        });
+        $(spiceText).keypress(function(event) {
+            if (event.which == 13) {
+                searchSpi();
+            }
+        });
+        $(nameText).keypress(function(event) {
+            if (event.which == 13) {
+                searchNam();
+            }
+        });
+    }
+
+    function empty() {
+        alert("The databse is empty");
+        self.location = "http://localhost:3000/";
+        return false;
+    }
+
+    function fill() {
+        alert("The database now has been filled with the given XML file");
+        self.location = "http://localhost:3000/";
+        return false;
+    }
+
+    function searchIng() {
+        console.log($(ingredientText).val());
+        if ($(ingredientText).val()) {
+            self.location = "http://localhost:3000/find?ingredient=" + $(ingredientText).val();
+        } else {
+            alert("No input for ingredient field!");
+        }
+    }
+
+    function searchSpi() {
+        console.log($(spiceText).val());
+        if ($(spiceText).val()) {
+            self.location = "http://localhost:3000/find?spice=" + $(spiceText).val();
+        } else {
+            alert("No input for spice field!");
+        }
+    }
+
+    function searchNam() {
+        console.log($(nameText).val());
+        if ($(nameText).val()) {
+            self.location = "http://localhost:3000/find?recipe=" + $(nameText).val();
+        } else {
+            alert("No input for recipe name field!");
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </html>
